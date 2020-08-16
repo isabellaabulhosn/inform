@@ -16,7 +16,8 @@ const DICT = {
   hysterical: "intense",
   assertive: "confident",
   whitelist: "acceptlist",
-  blacklist: "blocklist"
+  blacklist: "blocklist",
+  businessman: "business person"
 };
 
 const DICT2 = {
@@ -32,7 +33,8 @@ const DICT2 = {
   hysterical: "intense",
   assertive: "confident",
   whitelist: "acceptlist",
-  blacklist: "blocklist"
+  blacklist: "blocklist",
+  businessman: "businessperson"
 };
 
 let elements = document.querySelectorAll(
@@ -52,10 +54,12 @@ function find() {
             } else {
               regex = new RegExp("\b" + key + "\b", "i");
             }
+            console.log(text);
             text = text.replace(
               regex,
-              `<span class='flagged' data-word='${DICT[key]}'>${text}</span>`
+              `<span class='flagged' data-word='${DICT[key]}'>${key}</span>`
             );
+            console.log(text);
           }
           const newChild = document.createElement("span");
           newChild.innerHTML = text;
