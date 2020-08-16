@@ -1,4 +1,13 @@
-.changed {
+.flagged {
     text-decoration: underline;
     text-decoration-color: red;
+}
+
+.changed {
+    text-decoration: underline;
+    text-decoration-color: green;
+}
+
+.hovered {
+    cursor: pointer;
 }

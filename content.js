@@ -15,6 +15,8 @@ const DICT = {
   nazi: "absolutist",
   hysterical: "intense",
   assertive: "confident",
+  whitelist: "acceptlist",
+  blacklist: "blocklist"
 };
 
 const DICT2 = {
@@ -29,41 +31,13 @@ const DICT2 = {
   nazi: "absolutist",
   hysterical: "intense",
   assertive: "confident",
+  whitelist: "acceptlist",
+  blacklist: "blocklist"
 };
 
 let elements = document.querySelectorAll(
   "h1, h2, h3, h4, h5, h6, p, li, td, caption, span, div, a, body, ul, strong, em, table, form, i, b"
 );
-
-function findAndReplace() {
-  elements.forEach((element) => {
-    element.childNodes.forEach((child, index) => {
-      if (child.nodeType === 3) {
-        if (child.textContent) {
-          let text = child.textContent;
-          for (const key in DICT) {
-            if (key in DICT2) {
-              const regex = new RegExp(key, "i");
-              text = text.replace(
-                regex,
-                `<span class='changed'>${DICT[key]}</span>`
-              );
-            } else {
-              const regex = new RegExp("\b" + key + "\b", "i");
-              text = text.replace(
-                regex,
-                `<span class='changed'>${DICT[key]}</span>`
-              );
-            }
-          }
-          const newChild = document.createElement("span");
-          newChild.innerHTML = text;
-          element.replaceChild(newChild, child);
-        }
-      }
-    });
-  });
-}
 
 function find() {
   elements.forEach((element) => {
@@ -72,19 +46,16 @@ function find() {
         if (child.textContent) {
           let text = child.textContent;
           for (const key in DICT) {
+            let regex;
             if (key in DICT2) {
-              const regex = new RegExp(key, "i");
-              text = text.replace(
-                regex,
-                `<span class='changed'>${text}</span>`
-              );
+              regex = new RegExp(key, "i");
             } else {
-              const regex = new RegExp("\b" + key + "\b", "i");
-              text = text.replace(
-                regex,
-                `<span class='changed'>${text}</span>`
-              );
+              regex = new RegExp("\b" + key + "\b", "i");
             }
+            text = text.replace(
+              regex,
+              `<span class='flagged' data-word='${DICT[key]}'>${text}</span>`
+            );
           }
           const newChild = document.createElement("span");
           newChild.innerHTML = text;
@@ -95,24 +66,24 @@ function find() {
   });
 }
 
-function replace(child) {
-  let text = child.textContent;
-  for (const key in DICT) {
-    if (key in DICT2) {
-      const regex = new RegExp(key, "i");
-      text = text.replace(regex, `<span class='changed'>${DICT[key]}</span>`);
-    } else {
-      const regex = new RegExp("\b" + key + "\b", "i");
-      text = text.replace(regex, `<span class='changed'>${DICT[key]}</span>`);
-    }
-  }
-  const newChild = document.createElement("span");
-  newChild.innerHTML = text;
-  element.replaceChild(newChild, child);
+function replace(elem) {
+  let newValue = elem.getAttribute('data-word');
+  elem.textContent = newValue;
+  elem.classList.add("changed");
+}
+
+function debate(elem) {
+  elem.classList.add("hovered");
 }
 
 window.onload = find();
-let word = document.querySelector("span");
-word.addEventListener("click", replace(word));
 
-//window.onload = findAndReplace();
+let words = document.getElementsByClassName('flagged');
+for (let i = 0; i < words.length; i++) {
+  words[i].onclick = () => replace(words[i]);
+}
+
+for (let i = 0; i < words.length; i++) {
+  words[i].onmouseover = () => debate(words[i]);
+}
+
